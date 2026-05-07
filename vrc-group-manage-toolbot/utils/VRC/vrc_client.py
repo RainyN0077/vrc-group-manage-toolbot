@@ -243,9 +243,6 @@ class VRCClient:
     async def get_group_instances(self, group_id: str) -> List[Instance]:
         r = await self._request("GET", f"/groups/{group_id}/instances",
                                 params={"offset": 0, "n": 50})
-        if r:
-            logger.info(f"Instance fields: {list(r[0].keys())}")
-            logger.info(f"First instance raw: {json.dumps(r[0], indent=2)[:1000]}")
         return [Instance(**data) for data in r]
     
     async def get_world(self, world_id: str) -> Optional[World]:

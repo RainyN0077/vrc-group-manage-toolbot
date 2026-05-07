@@ -61,7 +61,7 @@ async def handle_group_instances(bot: Bot, event: MessageEvent, args: Message = 
                 for i, inst in enumerate(instances[:10], 1):
                     name = inst.worldName or inst.worldId or "未知"
                     msg += f"{i}. {name}\n"
-                    msg += f"   人数: {inst.userCount}\n"
+                    msg += f"   群成员: {inst.userCount} 人\n"
                 if len(instances) > 10:
                     msg += f"... 还有 {len(instances) - 10} 个实例"
     except Exception as e:

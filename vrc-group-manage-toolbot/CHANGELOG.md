@@ -63,6 +63,18 @@ utils/__init__.py    →  重新从 VRC 子包导出
 +(新增) plugins/group_admin.py, user_bind.py
 ```
 
+### 🔧 后续修复（同日）
+
+- **`#instances` 显示完善** — 提取 `world.name` 作为世界名、`world.capacity` 作为容量、解析 `location` 获取在线人数
+- **`#vrcCheck` 命令** — 快速验证登录状态，不触发重认证
+- **Cookie 持久化** — 登录成功自动保存到 `data/auth_cookie.txt`，重启免登录
+- **`Instance` 模型修复** — `world` 字典自动展开为 `worldId`/`worldName`/`capacity`
+- **`Instance` 模型** — `memberCount` 映射为 `userCount`，`instanceId` 别名
+- **`n_users` 验证器** — 兼容 API 返回 `0`（整数）而非空数组
+- **登录流程** — 已有 cookie 时不再因为响应无新 cookie 而误判失败
+- **重复消息修复** — 删除 `#instances`/`#whereis` 中重复的 `send()` 调用
+- **实例 ID 修复** — 传入完整 `location`（含 `~group()` 标签）获取准确在线人数
+
 ---
 
 ## v0.1.0 — 2026-05-06

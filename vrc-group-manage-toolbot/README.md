@@ -69,6 +69,7 @@ python run.py
 | `#vrclLogin` | 直接发 | 用户名+密码登录，自动检测 2FA |
 | `#2fa <验证码>` | `#2fa 123456` | 提交 TOTP 两步验证码 |
 | `#vrclLogin cookie=xxx` | `#vrclLogin cookie=authcookie_xxx` | 浏览器复制 cookie 直登，跳过 2FA |
+| `#vrcCheck` | 直接发 | 检查当前登录状态，不触发重认证 |
 
 ### 查询命令
 

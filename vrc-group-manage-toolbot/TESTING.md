@@ -97,6 +97,7 @@
 | Bot QQ | ****** |
 | 测试群 | ****** (****) |
 | VRChat 账号 | ****** |
+| VRChat ID | usr_b2d06dbd-7a37-4732-a169-a2c76ac19d22 |
 | VRChat 群组 | grp_fdd4cdf6-b3e0-4be3-a040-5b8abf2617f4 (中文kipfel厅, 3975人) |
 | Bot 群组角色 | 待确认（需 Owner/Mod 方可测管理命令） |
 | NapCat QQ | 协议登录（Bot QQ 同号） |

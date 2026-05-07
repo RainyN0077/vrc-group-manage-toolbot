@@ -1,6 +1,6 @@
 [project]
 name = "vrc-group-manage-toolbot"
-version = "0.1.0"
+version = "0.2.0"
 description = "vrc-group-manage-toolbot"
 readme = "README.md"
 requires-python = ">=3.10, <4.0"

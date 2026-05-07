@@ -42,6 +42,7 @@ class GroupConfigStore:
         key = str(qq_group_id)
         if key not in self._configs:
             self._configs[key] = GroupConfig(qq_group_id=key)
+            self._save()
         return self._configs[key]
 
     def set(self, config: GroupConfig):

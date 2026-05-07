@@ -4,6 +4,8 @@
 
 from .VRC import (
     VRCClient, VRCConfig, get_vrc_client,
+)
+from .VRC.vrc_models import (
     User, Instance, Group, World,
     GroupMember, GroupRole, Announcement, JoinRequest, AuditLogEntry,
 )

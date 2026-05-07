@@ -496,10 +496,10 @@ async def handle_gannounce_pre(bot: Bot, event: GroupMessageEvent, state: T_Stat
     state["group_id"] = group_id
     state["title"] = title
     state["content"] = content
+    await gannounce_cmd.send(f"⚠️ 确认发布此公告？\n标题: {title}\n内容: {content}\n\n回复 'yes' 确认，其他任意键取消")
 
 
-@gannounce_cmd.got("confirm",
-                   prompt="⚠️ 确认发布此公告？\n标题: {title}\n内容: {content}\n\n回复 'yes' 确认，其他任意键取消")
+@gannounce_cmd.got("confirm")
 async def handle_gannounce_confirm(bot: Bot, event: GroupMessageEvent, state: T_State,
                                    confirm: str = ArgPlainText()):
     if confirm.strip().lower() != "yes":

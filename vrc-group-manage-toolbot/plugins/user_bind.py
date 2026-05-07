@@ -215,10 +215,10 @@ async def handle_unbind_pre(bot: Bot, event: GroupMessageEvent, state: T_State):
 
     state["vrc_name"] = binding.vrc_display_name
     state["vrc_id"] = binding.vrc_user_id
+    await unbind_cmd.send(f"⚠️ 确认解绑 {binding.vrc_display_name} ({binding.vrc_user_id})？回复 'yes' 确认，其他任意键取消")
 
 
-@unbind_cmd.got("confirm",
-                prompt="⚠️ 确认解绑 {vrc_name} ({vrc_id})？回复 'yes' 确认，其他任意键取消")
+@unbind_cmd.got("confirm")
 async def handle_unbind_confirm(event: GroupMessageEvent, state: T_State,
                                 confirm: str = ArgPlainText()):
     if confirm.strip().lower() != "yes":

@@ -49,5 +49,13 @@ class GroupConfigStore:
         self._configs[config.qq_group_id] = config
         self._save()
 
+    def get_by_vrc_group(self, vrc_group_id: str) -> list[str]:
+        """根据 VRChat 群组 ID 查找所有绑定的 QQ 群 ID"""
+        result = []
+        for qq_id, config in self._configs.items():
+            if config.default_vrc_group == vrc_group_id:
+                result.append(qq_id)
+        return result
+
 
 group_config_store = GroupConfigStore()

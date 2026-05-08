@@ -34,7 +34,7 @@ async def handle_config(bot: Bot, event: GroupMessageEvent, args: Message = Comm
         # 显示帮助信息
         help_msg = (
             "🔧 Bot 配置管理（仅超级管理员）\n"
-            "=" * 30 + "\n"
+            + "=" * 30 + "\n"
             "用法:\n"
             "#bot status - 查看当前群配置状态\n"
             "#bot list - 列出所有可配置命令\n"
@@ -319,6 +319,7 @@ async def handle_clear_temp_permission(bot: Bot, event: GroupMessageEvent, raw_m
     """清除临时权限"""
     at_qq = None
     for seg in raw_msg:
+        logger.debug(f"cleartemppermission seg: type={seg.type!r}, data={seg.data}")
         if seg.type == "at":
             qq = seg.data.get("qq", "")
             if qq and qq != "all":

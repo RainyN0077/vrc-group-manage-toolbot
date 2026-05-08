@@ -28,10 +28,17 @@ async def handle_bindgroup(bot: Bot, event: GroupMessageEvent | PrivateMessageEv
         await _handle_query(bot, event)
         return
     
-    # 情况1b：私聊中传入纯数字 QQ 群号 → 查询该群绑定状态
-    if isinstance(event, PrivateMessageEvent) and text.isdigit():
-        await _handle_query(bot, event, qq_group_id=text)
+    # 情况1b：私聊查询指定群 #bindgroup query <QQ群号>
+    if text.lower().startswith("query "):
+        await _handle_query(bot, event, qq_group_id=text.split(None, 1)[1].strip())
         return
+    
+    # 情况1c：#bindgroup 群=<QQ群号> 或纯数字 → 查询该群绑定状态
+    if isinstance(event, PrivateMessageEvent):
+        qq_id = text.split("=", 1)[-1].strip() if "=" in text else text
+        if qq_id.isdigit():
+            await _handle_query(bot, event, qq_group_id=qq_id)
+            return
     
     # 情况2：解绑操作（仅超管可用）
     if text.lower() in ("unbind", "--unbind", "-u"):
@@ -103,7 +110,7 @@ async def _handle_unbind(bot: Bot, event: GroupMessageEvent | PrivateMessageEven
         # 私聊中查询，需要指定 QQ 群号
         await bindgroup_cmd.finish(format_error(
             "私聊查询需要指定 QQ 群号",
-            "用法: #bindgroup <QQ群号>"
+            "用法: #bindgroup <QQ群号>  或  #bindgroup 群=<QQ群号>"
         ))
     
     config = group_config_store.get(qq_group_id)

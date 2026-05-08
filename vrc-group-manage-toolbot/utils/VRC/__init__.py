@@ -1,5 +1,6 @@
-from .vrc_client import VRCClient
-from .vrc_config import VRCConfig
+from .vrc_client import *
+from .vrc_config import *
+from .vrc_models import *
 
 _vrc_client: VRCClient = None
 

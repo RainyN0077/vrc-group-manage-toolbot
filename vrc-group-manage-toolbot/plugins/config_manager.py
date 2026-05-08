@@ -329,7 +329,7 @@ async def handle_set_temp_permission(bot: Bot, event: GroupMessageEvent, perm_st
 
 async def handle_clear_temp_permission(bot: Bot, event: GroupMessageEvent):
     """清除临时权限"""
-    at_qq = _extract_at_qq(raw_msg, event)
+    at_qq = _extract_at_qq(event)
     
     if not at_qq:
         await config_cmd.finish(format_error("请 @ 要清除临时权限的用户"))

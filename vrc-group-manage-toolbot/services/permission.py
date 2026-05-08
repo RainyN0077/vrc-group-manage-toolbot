@@ -26,7 +26,7 @@ class PermissionLevel(IntEnum):
             "owner": cls.OWNER, "4": cls.OWNER,
             "superuser": cls.SUPERUSER, "5": cls.SUPERUSER,
         }
-        return mapping[level_str.lower()]
+        return mapping[level_str.strip().lower()]
 
 
 # 临时权限存储: {qq_id: PermissionLevel}
@@ -41,8 +41,9 @@ async def get_permission_level(bot: Bot, event: GroupMessageEvent) -> Permission
     qq_id = str(user_id)
     
     # 0. 检查是否有临时设定的权限 (优先级最高)
-    if qq_id in _temp_permissions:
-        return _temp_permissions[qq_id]
+    temp = _temp_permissions.get(qq_id)
+    if temp is not None:
+        return temp
     
     # 1. 检查是否为机器人超管 (Lv5)
     if qq_id in bot.config.superusers:
@@ -89,7 +90,7 @@ async def check_vrc_group_role(
     vrc_client: "VRCClient",
     user_id: str,
     group_id: str,
-    required_roles: list = None,
+    required_roles: Optional[list] = None,
 ) -> bool:
     if required_roles is None:
         required_roles = ["owner", "moderator"]

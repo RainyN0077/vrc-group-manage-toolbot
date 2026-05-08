@@ -34,7 +34,7 @@ class VRCClient:
         self.client: Optional[httpx.AsyncClient] = None
         self._authenticated = False
         self._cookie_file = Path("data/auth_cookie.txt")
-        self._pending_2fa_cookie: Optional[str] = None
+        self._pending_2fa_cookies: dict[str, str] = {}
     
     def _save_cookie(self):
         if self.config.auth_cookie:
@@ -88,7 +88,7 @@ class VRCClient:
             self.client = None
             self._authenticated = False
     
-    async def verify_2fa(self, tfa_code: str):
+    async def verify_2fa(self, tfa_code: str, user_id: str = None):
         try:
             user = self.config.username
             pwd = self.config.password
@@ -96,10 +96,12 @@ class VRCClient:
                 return False
             client = await self._get_client()
             logger.info(f"Submitting 2FA code: {tfa_code}")
-            # 构建请求参数：Basic Auth + twoFactorAuth cookie
+            # 构建请求参数：BasicAuth + twoFactorAuth cookie（按用户隔离）
             kwargs = {"json": {"code": tfa_code}}
-            if self._pending_2fa_cookie:
-                kwargs["headers"] = {"Cookie": f"twoFactorAuth={self._pending_2fa_cookie}"}
+            cookie_key = str(user_id) if user_id else "_default"
+            pending_cookie = self._pending_2fa_cookies.pop(cookie_key, None)
+            if pending_cookie:
+                kwargs["headers"] = {"Cookie": f"twoFactorAuth={pending_cookie}"}
             else:
                 kwargs["auth"] = httpx.BasicAuth(user, pwd)
             tfa_response = await client.post(
@@ -118,7 +120,6 @@ class VRCClient:
             if tfa_response.status_code != 200:
                 logger.error(f"2FA verify non-200: {tfa_response.text[:200]}")
                 return False
-            self._pending_2fa_cookie = None
             twofa_cookie = tfa_response.cookies.get("twoFactorAuth")
             if not twofa_cookie:
                 logger.error(f"No twoFactorAuth, cookies: {dict(tfa_response.cookies)}")
@@ -157,7 +158,7 @@ class VRCClient:
             logger.error(f"2FA exception: {e}")
             return False
 
-    async def login(self, username: Optional[str] = None, password: Optional[str] = None):
+    async def login(self, username: Optional[str] = None, password: Optional[str] = None, user_id: str = None):
         """
         登录 VRChat API
         
@@ -194,7 +195,10 @@ class VRCClient:
                 if response_data.get("requiresTwoFactorAuth"):
                     twofa_cookie = response.cookies.get("twoFactorAuth")
                     if twofa_cookie:
-                        self._pending_2fa_cookie = twofa_cookie
+                        if user_id:
+                            self._pending_2fa_cookies[str(user_id)] = twofa_cookie
+                        else:
+                            self._pending_2fa_cookies["_default"] = twofa_cookie
                         logger.info("需要两步验证码，已保存 twoFactorAuth cookie")
                     else:
                         logger.warning("需要两步验证但未收到 twoFactorAuth cookie")

@@ -16,11 +16,10 @@ async def require_auth(matcher, client=None):
         await matcher.finish("⚠️ 尚未登录 VRChat API\n请先使用 #vrclLogin 或 #vrclLogin cookie=xxx")
 
 
-def resolve_group_id(event: GroupMessageEvent, text_parts: list = None) -> str:
+def resolve_group_id(event: GroupMessageEvent) -> str:
     """
     解析群组 ID
     - 群聊中：强制使用已绑定的默认群组，忽略任何传入的 grp_xxx 参数
-    - 私聊中：允许超管通过参数指定群组
     """
     config = group_config_store.get(str(event.group_id))
     if not config.default_vrc_group:
@@ -48,7 +47,7 @@ async def handle_gmembers(bot: Bot, event: GroupMessageEvent, state: T_State,
         await gmembers_cmd.finish(error_msg)
     
     parts = args.extract_plain_text().strip().split()
-    group_id = resolve_group_id(event, parts)
+    group_id = resolve_group_id(event)
     skip_grp_prefix(parts)
     
     if not group_id:
@@ -108,7 +107,7 @@ async def handle_ginvite(bot: Bot, event: GroupMessageEvent, args: Message = Com
         await ginvite_cmd.finish(error_msg)
 
     parts = args.extract_plain_text().strip().split()
-    group_id = resolve_group_id(event, parts)
+    group_id = resolve_group_id(event)
     skip_grp_prefix(parts)
     
     if not group_id:
@@ -155,7 +154,7 @@ async def handle_gkick_pre(bot: Bot, event: GroupMessageEvent, state: T_State,
         await gkick_cmd.finish(error_msg)
 
     parts = args.extract_plain_text().strip().split()
-    group_id = resolve_group_id(event, parts)
+    group_id = resolve_group_id(event)
     skip_grp_prefix(parts)
     
     if not group_id:
@@ -208,7 +207,7 @@ async def handle_gban_pre(bot: Bot, event: GroupMessageEvent, state: T_State,
         await gban_cmd.finish(error_msg)
 
     parts = args.extract_plain_text().strip().split()
-    group_id = resolve_group_id(event, parts)
+    group_id = resolve_group_id(event)
     skip_grp_prefix(parts)
     
     if not group_id:
@@ -260,7 +259,7 @@ async def handle_gunban(bot: Bot, event: GroupMessageEvent, args: Message = Comm
         await gunban_cmd.finish(error_msg)
 
     parts = args.extract_plain_text().strip().split()
-    group_id = resolve_group_id(event, parts)
+    group_id = resolve_group_id(event)
     skip_grp_prefix(parts)
     
     if not group_id:
@@ -306,7 +305,7 @@ async def handle_grole(bot: Bot, event: GroupMessageEvent, args: Message = Comma
         await grole_cmd.finish(error_msg)
 
     parts = args.extract_plain_text().strip().split()
-    group_id = resolve_group_id(event, parts)
+    group_id = resolve_group_id(event)
     skip_grp_prefix(parts)
     
     if not group_id:
@@ -422,7 +421,7 @@ async def handle_gaccept(bot: Bot, event: GroupMessageEvent, args: Message = Com
         await gaccept_cmd.finish(error_msg)
 
     parts = args.extract_plain_text().strip().split()
-    group_id = resolve_group_id(event, parts)
+    group_id = resolve_group_id(event)
     skip_grp_prefix(parts)
     
     if not group_id:
@@ -469,7 +468,7 @@ async def handle_greject(bot: Bot, event: GroupMessageEvent, args: Message = Com
         await greject_cmd.finish(error_msg)
 
     parts = args.extract_plain_text().strip().split()
-    group_id = resolve_group_id(event, parts)
+    group_id = resolve_group_id(event)
     skip_grp_prefix(parts)
     
     if not group_id:
@@ -583,7 +582,7 @@ async def handle_gdelannounce_pre(bot: Bot, event: GroupMessageEvent, state: T_S
         await gdelannounce_cmd.finish(error_msg)
 
     parts = args.extract_plain_text().strip().split()
-    group_id = resolve_group_id(event, parts)
+    group_id = resolve_group_id(event)
     skip_grp_prefix(parts)
     
     if not group_id:

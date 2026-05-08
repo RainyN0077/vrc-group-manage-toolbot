@@ -78,12 +78,12 @@ async def handle_config(bot: Bot, event: GroupMessageEvent, args: Message = Comm
         cmd_name = parts[1] if len(parts) > 1 else None
         await handle_reset(bot, event, cmd_name)
     elif subcmd == "settemppermission":
-        if len(parts) < 3:
+        if len(parts) < 2:
             await config_cmd.finish(format_error(
                 "参数不足",
                 "用法: #bot settemppermission @QQ <权限等级>"
             ))
-        await handle_set_temp_permission(bot, event, raw_msg, parts[2])
+        await handle_set_temp_permission(bot, event, raw_msg, parts[-1])
     elif subcmd == "cleartemppermission":
         await handle_clear_temp_permission(bot, event, raw_msg)
     elif subcmd == "temppermissions":

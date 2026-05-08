@@ -170,11 +170,13 @@ vrc_login = on_command("vrclLogin", priority=5)
 vrc_2fa = on_command("2fa", priority=5)
 
 _pending_2fa_users: set[str] = set()
+_pending_2fa_tasks: dict[str, asyncio.Task] = {}
 
 
 async def _clear_2fa_after(user_id: str, seconds: int):
     await asyncio.sleep(seconds)
     _pending_2fa_users.discard(user_id)
+    _pending_2fa_tasks.pop(user_id, None)
 
 
 @vrc_login.handle()
@@ -184,8 +186,6 @@ async def handle_vrc_login(bot: Bot, event: MessageEvent, args: Message = Comman
         level = await get_permission_level(bot, event)
         if level < PermissionLevel.SUPERUSER:
             await vrc_login.finish("❌ 私聊中仅超级管理员可使用登录指令")
-    
-    global _pending_2fa
 
     text = args.extract_plain_text().strip()
 
@@ -227,7 +227,7 @@ async def handle_vrc_login(bot: Bot, event: MessageEvent, args: Message = Comman
 
     try:
         client = get_vrc_client()
-        result = await client.login()
+        result = await client.login(user_id=str(event.user_id))
     except Exception as e:
         logger.error(f"VRChat 登录异常: {e}")
         await vrc_login.finish(f"登录失败: {str(e)}")
@@ -235,7 +235,7 @@ async def handle_vrc_login(bot: Bot, event: MessageEvent, args: Message = Comman
 
     if result == "need_2fa":
         _pending_2fa_users.add(str(event.user_id))
-        asyncio.create_task(_clear_2fa_after(str(event.user_id), 30))
+        _pending_2fa_tasks[str(event.user_id)] = asyncio.create_task(_clear_2fa_after(str(event.user_id), 30))
         await vrc_login.send("⚠️ 需要两步验证 (TOTP)，请在 30 秒内使用 #2fa <6位验证码>")
         await vrc_login.finish()
         return
@@ -267,7 +267,7 @@ async def handle_vrc_2fa(bot: Bot, event: MessageEvent, args: Message = CommandA
 
     try:
         client = get_vrc_client()
-        result = await client.verify_2fa(code)
+        result = await client.verify_2fa(code, user_id=str(event.user_id))
     except Exception as e:
         logger.error(f"VRChat 两步验证异常: {e}")
         _pending_2fa_users.discard(user_key)
@@ -275,6 +275,9 @@ async def handle_vrc_2fa(bot: Bot, event: MessageEvent, args: Message = CommandA
         return
 
     _pending_2fa_users.discard(user_key)
+    task = _pending_2fa_tasks.pop(user_key, None)
+    if task:
+        task.cancel()
     if result is True:
         await _finish_login(vrc_2fa, get_vrc_client(), True)
     else:

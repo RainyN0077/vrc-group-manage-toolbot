@@ -80,7 +80,7 @@ async def handle_gmembers(bot: Bot, event: GroupMessageEvent, state: T_State,
         await gmembers_cmd.finish(f"群组 {group_id} 没有成员")
 
     msg = f"📋 群组成员 (第{page}页)\n"
-    msg += "─" * 24 + "\n"
+    msg += "=" * 24 + "\n"
     for m in members[:20]:
         msg += f"• {m.userId}\n"
         if m.roleIds:
@@ -411,7 +411,7 @@ async def handle_grequests(bot: Bot, event: GroupMessageEvent, args: Message = C
         await grequests_cmd.finish("当前没有待处理的入群申请")
 
     msg = f"📋 入群申请 ({len(requests_list)}人)\n"
-    msg += "─" * 24 + "\n"
+    msg += "=" * 24 + "\n"
     for i, req in enumerate(requests_list[:20], 1):
         msg += f"{i}. {req.userId}\n"
 
@@ -674,7 +674,7 @@ async def handle_gaudit(bot: Bot, event: GroupMessageEvent, args: Message = Comm
         await gaudit_cmd.finish("暂无审核日志")
 
     msg = "📋 审核日志 (最近50条)\n"
-    msg += "─" * 24 + "\n"
+    msg += "=" * 24 + "\n"
     for log_entry in logs[:20]:
         desc = log_entry.description or "无描述"
         created = log_entry.created_at or ""

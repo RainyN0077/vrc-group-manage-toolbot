@@ -96,7 +96,7 @@ async def _handle_query(bot: Bot, event: GroupMessageEvent | PrivateMessageEvent
             pass
     
     msg = f"🔗 群组绑定信息\n"
-    msg += "─" * 24 + "\n"
+    msg += "=" * 24 + "\n"
     msg += f"VRChat 群组: {group_name}\n"
     msg += f"已绑定 QQ 群 ({len(bound_qq_groups)}个):\n"
     

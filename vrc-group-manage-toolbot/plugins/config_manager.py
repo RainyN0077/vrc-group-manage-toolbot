@@ -34,7 +34,7 @@ async def handle_config(bot: Bot, event: GroupMessageEvent, args: Message = Comm
         # 显示帮助信息
         help_msg = (
             "🔧 Bot 配置管理（仅超级管理员）\n"
-            "─" * 30 + "\n"
+            "=" * 30 + "\n"
             "用法:\n"
             "#bot status - 查看当前群配置状态\n"
             "#bot list - 列出所有可配置命令\n"
@@ -99,7 +99,7 @@ async def handle_status(bot: Bot, event: GroupMessageEvent):
     config = group_config_store.get(str(event.group_id))
     
     msg = f"📊 当前群配置状态\n"
-    msg += "─" * 30 + "\n"
+    msg += "=" * 30 + "\n"
     msg += f"默认VRChat群组: {config.default_vrc_group or '未设置'}\n"
     msg += f"通知功能: {'✅ 启用' if config.notify_enabled else '❌ 禁用'}\n"
     msg += f"管理操作: {'✅ 启用' if config.admin_ops_enabled else '❌ 禁用'}\n"
@@ -115,7 +115,7 @@ async def handle_status(bot: Bot, event: GroupMessageEvent):
     
     if modified_cmds:
         msg += f"已自定义的命令 ({len(modified_cmds)}个):\n"
-        msg += "─" * 30 + "\n"
+        msg += "=" * 30 + "\n"
         for cmd_name, cmd_config in sorted(modified_cmds)[:20]:
             status = "✅" if cmd_config.enabled else "❌"
             perm_names = {
@@ -139,7 +139,7 @@ async def handle_list(bot: Bot, event: GroupMessageEvent):
     config = group_config_store.get(str(event.group_id))
     
     msg = "📋 所有可配置命令\n"
-    msg += "─" * 30 + "\n\n"
+    msg += "=" * 30 + "\n\n"
     
     # 按模块分组
     modules = {
@@ -340,7 +340,7 @@ async def handle_show_temp_permissions(bot: Bot, event: GroupMessageEvent):
         await config_cmd.finish("✨ 当前没有设置任何临时权限")
     
     msg = f"📋 临时权限列表 (共 {len(temp_perms)} 人)\n"
-    msg += "─" * 30 + "\n"
+    msg += "=" * 30 + "\n"
     
     perm_names = {
         0: "未绑定成员", 1: "已绑定成员", 

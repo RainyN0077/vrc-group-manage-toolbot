@@ -275,7 +275,7 @@ async def handle_bindinfo(bot: Bot, event: GroupMessageEvent):
     status = "✅ 已确认" if binding.confirmed else "⏳ 待验证"
 
     msg = f"🔗 绑定信息\n"
-    msg += "─" * 20 + "\n"
+    msg += "=" * 20 + "\n"
     msg += f"来源: {source}\n"
     msg += f"VRChat: {binding.vrc_display_name}\n"
     msg += f"ID: {binding.vrc_user_id}\n"
@@ -320,7 +320,7 @@ async def handle_whois(bot: Bot, event: GroupMessageEvent):
         await whois_cmd.finish(format_error(error or "无法获取用户信息"))
 
     msg = f"👤 {user.displayName}\n"
-    msg += "─" * 20 + "\n"
+    msg += "=" * 20 + "\n"
     msg += f"状态: {user.status or '离线'}\n"
 
     if user.location and user.location != "offline":

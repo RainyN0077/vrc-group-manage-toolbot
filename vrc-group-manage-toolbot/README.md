@@ -120,7 +120,13 @@ python run.py
 | `#bot permission <命令> <权限>` | `#bot permission whereis user` | 设置命令权限 |
 | `#bot reset [命令]` | `#bot reset` 或 `#bot reset gban` | 重置配置 |
 
-**权限等级**: `0/user` (普通用户), `1/admin` (群管理员), `2/superuser` (超级管理员)
+**权限等级**: 
+- `0/unbound_user` - 未绑定成员
+- `1/bound_user` - 已绑定成员
+- `2/unbound_admin` - 未绑定管理员
+- `3/bound_admin` - 已绑定管理员
+- `4/owner` - 群主
+- `5/superuser` - 超级管理员
 
 详细文档请查看 [CONFIG_GUIDE.md](./CONFIG_GUIDE.md)
 
@@ -193,22 +199,26 @@ vrc-group-manage-toolbot/
 | Lv1 | QQ 群管理员/群主 | 群管理操作、Bot 状态 |
 | Lv2 | 超级用户 (SUPERUSERS) | 强制绑定、Bot 调试、配置管理 |
 
-### 动态权限配置（v0.2.2+）
+### 六级权限体系（v0.2.2+）
 
-超级管理员可以为每个群单独配置：
-- ✅/❌ **功能开关**：启用或禁用任意命令
-- 🔐 **权限调整**：修改执行命令所需的最低权限
+系统现在根据 **QQ身份** 与 **VRChat绑定状态** 自动判定 6 级权限：
 
-示例：
+| 等级 | 身份描述 | 说明 |
+|------|----------|------|
+| Lv0 | 未绑定普通成员 | 刚进群或未绑定 VRC 账号的用户 |
+| Lv1 | 已绑定普通成员 | 已完成 `/bind` 验证的活跃用户 |
+| Lv2 | 未绑定管理员 | QQ 管理员但未绑定 VRC 账号 |
+| Lv3 | 已绑定管理员 | QQ 管理员且已绑定 VRC 账号 |
+| Lv4 | 群主 | QQ 群主（拥有最高群内管理权） |
+| Lv5 | 超级管理员 | `.env` 中配置的 Bot 运营者 |
+
+**配置示例：**
 ```bash
-# 禁用封禁功能
-#bot disable gban
+# 仅允许已绑定的管理员查看群成员
+#bot permission gmembers bound_admin
 
-# 允许所有人查询位置
-#bot permission whereis user
-
-# 提高踢人权限要求
-#bot permission gkick superuser
+# 封禁操作仅限群主执行
+#bot permission gban owner
 ```
 
 详见 [CONFIG_GUIDE.md](./CONFIG_GUIDE.md)

@@ -11,12 +11,15 @@
 ### 1. 按群配置
 每个QQ群都有独立的配置，互不影响。
 
-### 2. 三级权限体系
+### 2. 六级权限体系
 | 等级 | 名称 | 说明 |
 |------|------|------|
-| 0 | USER | 普通用户（任何人） |
-| 1 | GROUP_ADMIN | 群管理员/群主 |
-| 2 | SUPERUSER | 机器人超级管理员 |
+| 0 | UNBOUND_USER | 未绑定普通成员 |
+| 1 | BOUND_USER | 已绑定普通成员 |
+| 2 | UNBOUND_ADMIN | 未绑定管理员 |
+| 3 | BOUND_ADMIN | 已绑定管理员 |
+| 4 | OWNER | 群主 |
+| 5 | SUPERUSER | 机器人超级管理员 |
 
 ### 3. 默认配置
 所有命令都有合理的默认权限设置，开箱即用。
@@ -71,9 +74,12 @@
 ```
 
 权限等级可以用数字或名称：
-- `0` 或 `user` - 普通用户
-- `1` 或 `admin` - 群管理员
-- `2` 或 `superuser` - 超级管理员
+- `0` 或 `unbound_user` - 未绑定成员
+- `1` 或 `bound_user` - 已绑定成员
+- `2` 或 `unbound_admin` - 未绑定管理员
+- `3` 或 `bound_admin` - 已绑定管理员
+- `4` 或 `owner` - 群主
+- `5` 或 `superuser` - 超级管理员
 
 示例：
 ```
@@ -100,37 +106,25 @@
 
 ## 📊 命令分类及默认权限
 
-### 系统/认证模块（默认：普通用户）
+### 系统/认证模块（默认：未绑定成员）
 - `vrclLogin` - 登录
 - `2fa` - 两步验证
 - `vrcCheck` - 检查登录状态
 
-### 查询模块（默认：普通用户）
+### 查询模块（默认：已绑定成员）
 - `whereis` - 查询用户位置
 - `instances` - 查询群组实例
 - `whois` - 查询绑定用户状态
 
-### 用户绑定模块（默认：普通用户）
+### 用户绑定模块（默认：未绑定成员）
 - `bind` - 绑定VRChat账号
 - `confirm` - 确认绑定
-- `unbind` - 解绑
-- `bindinfo` - 查询绑定信息
 
-**特殊**：`bind force` 子命令强制要求超级管理员权限
+**特殊**：`unbind`, `bindinfo` 默认需要 **已绑定成员 (Lv1)** 权限。
 
-### 群组管理模块（默认：群管理员）
-- `gmembers` - 查看群成员
-- `ginvite` - 邀请入群
-- `gkick` - 踢出成员
-- `gban` - 封禁成员
-- `gunban` - 解封成员
-- `grole` - 设置角色
-- `grequests` - 查看入群申请
-- `gaccept` - 批准申请
-- `greject` - 拒绝申请
-- `gannounce` - 发布公告
-- `gdelannounce` - 删除公告
-- `gaudit` - 查看审核日志
+### 群组管理模块
+- **常规管理 (默认: 已绑定管理员 Lv3)**: `gmembers`, `ginvite`, `grequests`, `gaccept`, `greject`, `gannounce`, `gaudit`
+- **高危操作 (默认: 群主 Lv4)**: `gkick`, `gban`, `gunban`, `grole`, `gdelannounce`
 
 ---
 

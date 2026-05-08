@@ -13,6 +13,23 @@
   - `#bot permission <命令> <权限>` 设置权限等级
   - `#bot reset [命令]` 重置配置
 
+#### 六级细粒度权限体系
+- **重构 `services/permission.py`**
+  - 权限等级从 3 级扩展为 6 级：
+    - Lv0: 未绑定普通成员 (UNBOUND_USER)
+    - Lv1: 已绑定普通成员 (BOUND_USER)
+    - Lv2: 未绑定管理员 (UNBOUND_ADMIN)
+    - Lv3: 已绑定管理员 (BOUND_ADMIN)
+    - Lv4: 群主 (OWNER)
+    - Lv5: 机器人超级管理员 (SUPERUSER)
+  - `get_permission_level()` 逻辑升级：同时识别 QQ 身份与 VRChat 绑定状态
+  - 临时权限支持：提供内存级权限覆盖接口（`set_temp_permission`）
+
+- **优化默认配置 (`COMMAND_DEFAULTS`)**
+  - 查询类命令默认要求 **Lv1 (已绑定成员)**，鼓励用户完成绑定
+  - 敏感管理类命令（如封禁、踢人）默认提升至 **Lv4 (群主)**
+  - 常规管理类命令默认要求 **Lv3 (已绑定管理员)**
+
 #### 细粒度权限控制
 - **扩展 `services/group_config.py`**
   - 新增 `CommandConfig` 模型：单个命令的配置（enabled + permission）

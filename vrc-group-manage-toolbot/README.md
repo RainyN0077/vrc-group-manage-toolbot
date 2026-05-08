@@ -119,6 +119,7 @@ python run.py
 | `#bot disable <命令>` | `#bot disable gkick` | 禁用指定命令 |
 | `#bot permission <命令> <权限>` | `#bot permission whereis user` | 设置命令权限 |
 | `#bot settemppermission @QQ <权限>` | `#bot settemppermission @某人 3` | 临时设定某人权限 (重启失效) |
+| `#bot cleartemppermission @QQ` | `#bot cleartemppermission @某人` | 清除某人临时权限 |
 | `#bot temppermissions` | 直接发 | 查看所有临时权限设置 |
 | `#bot reset [命令]` | `#bot reset` 或 `#bot reset gban` | 重置配置 |
 
@@ -152,7 +153,7 @@ vrc-group-manage-toolbot/
 │
 ├── services/               # 服务层（插件 ↔ 后端）
 │   ├── api_guard.py        # 速率控制 + 指数退避 + 缓存
-│   ├── permission.py       # 三级权限判断
+│   ├── permission.py       # 六级权限判断
 │   ├── message_utils.py    # 消息格式化/分段
 │   ├── user_binding.py     # 绑定数据持久化
 │   └── group_config.py     # 每群独立配置

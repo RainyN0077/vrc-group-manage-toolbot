@@ -40,6 +40,7 @@ async def handle_config(bot: Bot, event: GroupMessageEvent, args: Message = Comm
             "#bot disable <命令> - 禁用命令\n"
             "#bot permission <命令> <权限> - 设置权限\n"
             "#bot settemppermission @QQ <权限> - 临时设定某人权限 (重启失效)\n"
+            "#bot cleartemppermission @QQ - 清除某人临时权限\n"
             "#bot temppermissions - 查看所有临时权限设置\n"
             "#bot reset [命令] - 重置配置\n\n"
             "权限等级:\n"
@@ -83,6 +84,8 @@ async def handle_config(bot: Bot, event: GroupMessageEvent, args: Message = Comm
                 "用法: #bot settemppermission @QQ <权限等级>"
             ))
         await handle_set_temp_permission(bot, event, raw_msg, parts[2])
+    elif subcmd == "cleartemppermission":
+        await handle_clear_temp_permission(bot, event, raw_msg)
     elif subcmd == "temppermissions":
         await handle_show_temp_permissions(bot, event)
     else:
@@ -308,6 +311,23 @@ async def handle_set_temp_permission(bot: Bot, event: GroupMessageEvent, raw_msg
     await config_cmd.finish(
         format_success(f"已临时设置 QQ {at_qq} 的权限为: {perm_names.get(perm_level.value, '未知')} (重启后失效)")
     )
+
+
+async def handle_clear_temp_permission(bot: Bot, event: GroupMessageEvent, raw_msg: Message):
+    """清除临时权限"""
+    at_qq = None
+    for seg in raw_msg:
+        if seg.type == "at":
+            qq = seg.data.get("qq", "")
+            if qq and qq != "all":
+                at_qq = str(qq)
+                break
+    
+    if not at_qq:
+        await config_cmd.finish(format_error("请 @ 要清除临时权限的用户"))
+    
+    clear_temp_permission(at_qq)
+    await config_cmd.finish(format_success(f"已清除 QQ {at_qq} 的临时权限"))
 
 
 async def handle_show_temp_permissions(bot: Bot, event: GroupMessageEvent):

@@ -15,7 +15,7 @@ from services.message_utils import format_error
 
 
 # 创建命令处理器
-group_instances = on_command("instances", priority=5)
+group_instances = on_command("instances", aliases={"list"}, priority=5)
 user_location = on_command("whereis", priority=5)
 
 # 登录命令

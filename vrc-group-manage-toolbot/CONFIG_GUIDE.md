@@ -11,12 +11,15 @@
 ### 1. 按群配置
 每个QQ群都有独立的配置，互不影响。
 
-### 2. 三级权限体系
-| 等级 | 名称 | 说明 |
-|------|------|------|
-| 0 | USER | 普通用户（任何人） |
-| 1 | GROUP_ADMIN | 群管理员/群主 |
-| 2 | SUPERUSER | 机器人超级管理员 |
+### 2. 六级权限体系
+| 等级 | 名称            | 说明      |
+|----|---------------|---------|
+| 0  | UNBOUND_USER  | 群成员     |
+| 1  | BOUND_USER    | 已绑定的群成员 |
+| 2  | UNBOUND_ADMIN | 未绑定的管理员 |
+| 3  | BOUND_ADMIN   | 已绑定的管理员 |
+| 4  | OWNER         | 群主      |
+| 5  | SUPERUSER     | 超级管理员   |
 
 ### 3. 默认配置
 所有命令都有合理的默认权限设置，开箱即用。
@@ -71,16 +74,41 @@
 ```
 
 权限等级可以用数字或名称：
-- `0` 或 `user` - 普通用户
-- `1` 或 `admin` - 群管理员
-- `2` 或 `superuser` - 超级管理员
+- `0` 或 `unbound_user` - 未绑定成员
+- `1` 或 `bound_user` - 已绑定成员
+- `2` 或 `unbound_admin` - 未绑定管理员
+- `3` 或 `bound_admin` - 已绑定管理员
+- `4` 或 `owner` - 群主
+- `5` 或 `superuser` - 超级管理员
 
 示例：
 ```
 #bot permission whereis user        # 所有人都可查询位置
-#bot permission gban admin          # 仅群管理员可封禁
+#bot permission gban owner          # 仅群主可封禁
 #bot permission bind 2              # 仅超管可绑定（用数字）
 ```
+
+### 临时权限管理 (v0.2.3+)
+**注意：以下设置仅在 Bot 本次运行期间生效，重启后自动清除。**
+
+#### 设定临时权限
+```
+#bot settemppermission @QQ号 <权限等级>
+```
+示例：
+```bash
+# 紧急剥夺某管理员的权限
+#bot settemppermission @捣乱的管理 0
+
+# 临时授权某人协助管理
+#bot settemppermission @热心成员 bound_admin
+```
+
+#### 查看临时权限列表
+```
+#bot temppermissions
+```
+显示当前所有被临时修改过权限的用户及其等级。
 
 ### 重置配置
 ```

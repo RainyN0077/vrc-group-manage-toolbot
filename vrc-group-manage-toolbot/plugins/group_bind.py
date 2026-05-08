@@ -8,6 +8,7 @@ from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent, PrivateMessageEv
 from nonebot.params import CommandArg
 from nonebot.typing import T_State
 
+from utils import get_vrc_client
 from services.permission import get_permission_level, PermissionLevel
 from services.group_config import group_config_store
 from services.message_utils import format_success, format_error, send_long_message
@@ -29,17 +30,10 @@ async def handle_bindgroup(bot: Bot, event: GroupMessageEvent | PrivateMessageEv
         await _handle_query(bot, event)
         return
     
-    # 情况1b：私聊查询指定群 #bindgroup query <QQ群号>
-    if text.lower().startswith("query "):
-        await _handle_query(bot, event, qq_group_id=text.split(None, 1)[1].strip())
+    # 情况1b：私聊中纯数字 QQ 群号 → 查询该群绑定状态
+    if isinstance(event, PrivateMessageEvent) and text.isdigit():
+        await _handle_query(bot, event, qq_group_id=text)
         return
-    
-    # 情况1c：#bindgroup 群=<QQ群号> 或纯数字 → 查询该群绑定状态
-    if isinstance(event, PrivateMessageEvent):
-        qq_id = text.split("=", 1)[-1].strip() if "=" in text else text
-        if qq_id.isdigit():
-            await _handle_query(bot, event, qq_group_id=qq_id)
-            return
     
     # 情况2：解绑操作（仅超管可用）
     if text.lower() in ("unbind", "--unbind", "-u"):
@@ -74,10 +68,9 @@ async def _handle_query(bot: Bot, event: GroupMessageEvent | PrivateMessageEvent
         qq_group_id = str(event.group_id)
     
     if not qq_group_id:
-        # 私聊中查询，需要指定 QQ 群号
         await bindgroup_cmd.finish(format_error(
             "私聊查询需要指定 QQ 群号",
-            "用法: #bindgroup <QQ群号>  或  #bindgroup 群=<QQ群号>"
+            "用法: #bindgroup <QQ群号>"
         ))
     
     config = group_config_store.get(qq_group_id)
@@ -91,9 +84,20 @@ async def _handle_query(bot: Bot, event: GroupMessageEvent | PrivateMessageEvent
     vrc_group_id = config.default_vrc_group
     bound_qq_groups = group_config_store.get_by_vrc_group(vrc_group_id)
     
+    # 尝试获取群组名称
+    vrc_client = get_vrc_client()
+    group_name = vrc_group_id
+    if vrc_client.config.auth_cookie:
+        try:
+            group = await vrc_client.get_group(vrc_group_id)
+            if group and group.name:
+                group_name = f"{group.name} ({vrc_group_id})"
+        except Exception:
+            pass
+    
     msg = f"🔗 群组绑定信息\n"
     msg += "─" * 24 + "\n"
-    msg += f"VRChat 群组: {vrc_group_id}\n"
+    msg += f"VRChat 群组: {group_name}\n"
     msg += f"已绑定 QQ 群 ({len(bound_qq_groups)}个):\n"
     
     for qq_id in bound_qq_groups:

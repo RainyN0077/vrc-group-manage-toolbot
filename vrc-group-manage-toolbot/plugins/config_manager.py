@@ -223,7 +223,7 @@ async def handle_permission(bot: Bot, event: GroupMessageEvent, cmd_name: str, p
     # 解析权限等级
     try:
         perm_level = PermissionLevel.from_str(perm_str)
-    except (ValueError, KeyError):
+    except KeyError:
         await config_cmd.finish(format_error(
             f"无效的权限等级: {perm_str}",
             "有效值: 0/unbound_user, 1/bound_user, 2/unbound_admin, 3/bound_admin, 4/owner, 5/superuser"
@@ -291,7 +291,7 @@ async def handle_set_temp_permission(bot: Bot, event: GroupMessageEvent, raw_msg
     # 解析权限等级
     try:
         perm_level = PermissionLevel.from_str(perm_str)
-    except (ValueError, KeyError):
+    except KeyError:
         await config_cmd.finish(format_error(
             f"无效的权限等级: {perm_str}",
             "有效值: 0/unbound_user, 1/bound_user, 2/unbound_admin, 3/bound_admin, 4/owner, 5/superuser"

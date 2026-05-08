@@ -49,11 +49,12 @@ async def get_permission_level(bot: Bot, event: GroupMessageEvent) -> Permission
         return PermissionLevel.SUPERUSER
     
     # 2. 检查是否为群主 (Lv4)
-    if sender.role == "owner":
+    sender_role = getattr(sender, 'role', None)  # PrivateMessageEvent 无 role 属性
+    if sender_role == "owner":
         return PermissionLevel.OWNER
     
     # 3. 检查是否为管理员 (Lv2 or Lv3)
-    if sender.role == "admin":
+    if sender_role == "admin":
         # 检查是否已绑定
         binding = user_binding_store.get_by_qq(qq_id)
         if binding and binding.confirmed:

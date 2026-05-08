@@ -49,16 +49,13 @@ async def handle_gmembers(bot: Bot, event: GroupMessageEvent, state: T_State,
     
     parts = args.extract_plain_text().strip().split()
     group_id = resolve_group_id(event, parts)
+    skip_grp_prefix(parts)
     
     if not group_id:
-        config = group_config_store.get(str(event.group_id))
-        if not config.default_vrc_group:
-            await gmembers_cmd.finish(format_error(
-                "当前群聊尚未绑定 VRChat 群组",
-                "请联系超级管理员使用 #bindgroup <grp_xxx> 进行绑定"
-            ))
-        else:
-            await gmembers_cmd.finish(format_error("无法获取群组信息，请稍后重试"))
+        await gmembers_cmd.finish(format_error(
+            "当前群聊尚未绑定 VRChat 群组",
+            "请联系超级管理员使用 #bindgroup <grp_xxx> 进行绑定"
+        ))
 
     await require_auth(gmembers_cmd)
 
@@ -115,14 +112,10 @@ async def handle_ginvite(bot: Bot, event: GroupMessageEvent, args: Message = Com
     skip_grp_prefix(parts)
     
     if not group_id:
-        config = group_config_store.get(str(event.group_id))
-        if not config.default_vrc_group:
-            await ginvite_cmd.finish(format_error(
-                "当前群聊尚未绑定 VRChat 群组",
-                "请联系超级管理员使用 #bindgroup <grp_xxx> 进行绑定"
-            ))
-        else:
-            await ginvite_cmd.finish(format_error("无法获取群组信息，请稍后重试"))
+        await ginvite_cmd.finish(format_error(
+            "当前群聊尚未绑定 VRChat 群组",
+            "请联系超级管理员使用 #bindgroup <grp_xxx> 进行绑定"
+        ))
     
     if len(parts) < 1:
         await ginvite_cmd.finish(format_error(
@@ -166,14 +159,10 @@ async def handle_gkick_pre(bot: Bot, event: GroupMessageEvent, state: T_State,
     skip_grp_prefix(parts)
     
     if not group_id:
-        config = group_config_store.get(str(event.group_id))
-        if not config.default_vrc_group:
-            await gkick_cmd.finish(format_error(
-                "当前群聊尚未绑定 VRChat 群组",
-                "请联系超级管理员使用 #bindgroup <grp_xxx> 进行绑定"
-            ))
-        else:
-            await gkick_cmd.finish(format_error("无法获取群组信息，请稍后重试"))
+        await gkick_cmd.finish(format_error(
+            "当前群聊尚未绑定 VRChat 群组",
+            "请联系超级管理员使用 #bindgroup <grp_xxx> 进行绑定"
+        ))
     
     if len(parts) < 1:
         await gkick_cmd.finish(format_error(
@@ -223,14 +212,10 @@ async def handle_gban_pre(bot: Bot, event: GroupMessageEvent, state: T_State,
     skip_grp_prefix(parts)
     
     if not group_id:
-        config = group_config_store.get(str(event.group_id))
-        if not config.default_vrc_group:
-            await gban_cmd.finish(format_error(
-                "当前群聊尚未绑定 VRChat 群组",
-                "请联系超级管理员使用 #bindgroup <grp_xxx> 进行绑定"
-            ))
-        else:
-            await gban_cmd.finish(format_error("无法获取群组信息，请稍后重试"))
+        await gban_cmd.finish(format_error(
+            "当前群聊尚未绑定 VRChat 群组",
+            "请联系超级管理员使用 #bindgroup <grp_xxx> 进行绑定"
+        ))
     
     if len(parts) < 1:
         await gban_cmd.finish(format_error(
@@ -279,14 +264,10 @@ async def handle_gunban(bot: Bot, event: GroupMessageEvent, args: Message = Comm
     skip_grp_prefix(parts)
     
     if not group_id:
-        config = group_config_store.get(str(event.group_id))
-        if not config.default_vrc_group:
-            await gunban_cmd.finish(format_error(
-                "当前群聊尚未绑定 VRChat 群组",
-                "请联系超级管理员使用 #bindgroup <grp_xxx> 进行绑定"
-            ))
-        else:
-            await gunban_cmd.finish(format_error("无法获取群组信息，请稍后重试"))
+        await gunban_cmd.finish(format_error(
+            "当前群聊尚未绑定 VRChat 群组",
+            "请联系超级管理员使用 #bindgroup <grp_xxx> 进行绑定"
+        ))
     
     if len(parts) < 1:
         await gunban_cmd.finish(format_error(
@@ -329,14 +310,10 @@ async def handle_grole(bot: Bot, event: GroupMessageEvent, args: Message = Comma
     skip_grp_prefix(parts)
     
     if not group_id:
-        config = group_config_store.get(str(event.group_id))
-        if not config.default_vrc_group:
-            await grole_cmd.finish(format_error(
-                "当前群聊尚未绑定 VRChat 群组",
-                "请联系超级管理员使用 #bindgroup <grp_xxx> 进行绑定"
-            ))
-        else:
-            await grole_cmd.finish(format_error("无法获取群组信息，请稍后重试"))
+        await grole_cmd.finish(format_error(
+            "当前群聊尚未绑定 VRChat 群组",
+            "请联系超级管理员使用 #bindgroup <grp_xxx> 进行绑定"
+        ))
     
     if len(parts) < 2:
         await grole_cmd.finish(format_error(
@@ -400,14 +377,10 @@ async def handle_grequests(bot: Bot, event: GroupMessageEvent, args: Message = C
     group_id = resolve_group_id(event)
     
     if not group_id:
-        config = group_config_store.get(str(event.group_id))
-        if not config.default_vrc_group:
-            await grequests_cmd.finish(format_error(
-                "当前群聊尚未绑定 VRChat 群组",
-                "请联系超级管理员使用 #bindgroup <grp_xxx> 进行绑定"
-            ))
-        else:
-            await grequests_cmd.finish(format_error("无法获取群组信息，请稍后重试"))
+        await grequests_cmd.finish(format_error(
+            "当前群聊尚未绑定 VRChat 群组",
+            "请联系超级管理员使用 #bindgroup <grp_xxx> 进行绑定"
+        ))
 
     await grequests_cmd.send("正在查询入群申请...")
 
@@ -453,14 +426,10 @@ async def handle_gaccept(bot: Bot, event: GroupMessageEvent, args: Message = Com
     skip_grp_prefix(parts)
     
     if not group_id:
-        config = group_config_store.get(str(event.group_id))
-        if not config.default_vrc_group:
-            await gaccept_cmd.finish(format_error(
-                "当前群聊尚未绑定 VRChat 群组",
-                "请联系超级管理员使用 #bindgroup <grp_xxx> 进行绑定"
-            ))
-        else:
-            await gaccept_cmd.finish(format_error("无法获取群组信息，请稍后重试"))
+        await gaccept_cmd.finish(format_error(
+            "当前群聊尚未绑定 VRChat 群组",
+            "请联系超级管理员使用 #bindgroup <grp_xxx> 进行绑定"
+        ))
     
     if len(parts) < 1:
         await gaccept_cmd.finish(format_error(
@@ -504,14 +473,10 @@ async def handle_greject(bot: Bot, event: GroupMessageEvent, args: Message = Com
     skip_grp_prefix(parts)
     
     if not group_id:
-        config = group_config_store.get(str(event.group_id))
-        if not config.default_vrc_group:
-            await greject_cmd.finish(format_error(
-                "当前群聊尚未绑定 VRChat 群组",
-                "请联系超级管理员使用 #bindgroup <grp_xxx> 进行绑定"
-            ))
-        else:
-            await greject_cmd.finish(format_error("无法获取群组信息，请稍后重试"))
+        await greject_cmd.finish(format_error(
+            "当前群聊尚未绑定 VRChat 群组",
+            "请联系超级管理员使用 #bindgroup <grp_xxx> 进行绑定"
+        ))
     
     if len(parts) < 1:
         await greject_cmd.finish(format_error(
@@ -563,14 +528,10 @@ async def handle_gannounce_pre(bot: Bot, event: GroupMessageEvent, state: T_Stat
     group_id = resolve_group_id(event)
     
     if not group_id:
-        config = group_config_store.get(str(event.group_id))
-        if not config.default_vrc_group:
-            await gannounce_cmd.finish(format_error(
-                "当前群聊尚未绑定 VRChat 群组",
-                "请联系超级管理员使用 #bindgroup <grp_xxx> 进行绑定"
-            ))
-        else:
-            await gannounce_cmd.finish(format_error("无法获取群组信息，请稍后重试"))
+        await gannounce_cmd.finish(format_error(
+            "当前群聊尚未绑定 VRChat 群组",
+            "请联系超级管理员使用 #bindgroup <grp_xxx> 进行绑定"
+        ))
 
     title = lines[0].strip()
     content = lines[1] if len(lines) > 1 else ""
@@ -626,14 +587,10 @@ async def handle_gdelannounce_pre(bot: Bot, event: GroupMessageEvent, state: T_S
     skip_grp_prefix(parts)
     
     if not group_id:
-        config = group_config_store.get(str(event.group_id))
-        if not config.default_vrc_group:
-            await gdelannounce_cmd.finish(format_error(
-                "当前群聊尚未绑定 VRChat 群组",
-                "请联系超级管理员使用 #bindgroup <grp_xxx> 进行绑定"
-            ))
-        else:
-            await gdelannounce_cmd.finish(format_error("无法获取群组信息，请稍后重试"))
+        await gdelannounce_cmd.finish(format_error(
+            "当前群聊尚未绑定 VRChat 群组",
+            "请联系超级管理员使用 #bindgroup <grp_xxx> 进行绑定"
+        ))
     
     if len(parts) < 1:
         await gdelannounce_cmd.finish(format_error(
@@ -681,14 +638,10 @@ async def handle_gaudit(bot: Bot, event: GroupMessageEvent, args: Message = Comm
     group_id = resolve_group_id(event)
     
     if not group_id:
-        config = group_config_store.get(str(event.group_id))
-        if not config.default_vrc_group:
-            await gaudit_cmd.finish(format_error(
-                "当前群聊尚未绑定 VRChat 群组",
-                "请联系超级管理员使用 #bindgroup <grp_xxx> 进行绑定"
-            ))
-        else:
-            await gaudit_cmd.finish(format_error("无法获取群组信息，请稍后重试"))
+        await gaudit_cmd.finish(format_error(
+            "当前群聊尚未绑定 VRChat 群组",
+            "请联系超级管理员使用 #bindgroup <grp_xxx> 进行绑定"
+        ))
 
     await gaudit_cmd.send("正在查询审核日志...")
 

@@ -10,7 +10,7 @@ from nonebot.params import CommandArg
 
 from services.permission import get_permission_level, PermissionLevel, check_command_permission, set_temp_permission, clear_temp_permission, get_all_temp_permissions
 import re
-from .services.message_utils import format_success, format_error, send_long_message
+from services.message_utils import format_success, format_error, send_long_message
 from services.group_config import group_config_store, COMMAND_DEFAULTS
 
 

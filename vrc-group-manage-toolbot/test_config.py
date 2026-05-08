@@ -36,7 +36,7 @@ def test_command_defaults():
             if cmd in COMMAND_DEFAULTS:
                 config = COMMAND_DEFAULTS[cmd]
                 status = "✅" if config["enabled"] else "❌"
-                perm_names = {0: "用户", 1: "管理", 2: "超管"}
+                perm_names = {0: "未绑定成员", 1: "已绑定成员", 2: "未绑定管理", 3: "已绑定管理", 4: "群主", 5: "超管"}
                 perm = perm_names.get(config["permission"].value, "?")
                 print(f"  {status} #{cmd:<15} (默认权限: {perm})")
             else:
@@ -81,7 +81,7 @@ def test_group_config():
     # 测试修改配置
     print("\n测试修改配置:")
     config.set_command_enabled("gban", False)
-    config.set_command_permission("whereis", PermissionLevel.GROUP_ADMIN)
+    config.set_command_permission("whereis", PermissionLevel.BOUND_ADMIN)
     
     print(f"  禁用 gban 后: {config.is_command_enabled('gban')}")
     print(f"  修改 whereis 权限后: {config.get_command_permission('whereis')}")
@@ -97,7 +97,7 @@ def test_group_config():
     print(f"  whereis 权限: {config_reloaded.get_command_permission('whereis')}")
     
     if not config_reloaded.is_command_enabled('gban') and \
-       config_reloaded.get_command_permission('whereis') == PermissionLevel.GROUP_ADMIN:
+       config_reloaded.get_command_permission('whereis') == PermissionLevel.BOUND_ADMIN:
         print("  ✅ 配置持久化成功")
     else:
         print("  ❌ 配置持久化失败")
@@ -120,12 +120,18 @@ def test_permission_check():
     print("\n✅ PermissionLevel.from_str 测试:")
     
     test_cases = [
-        ("user", PermissionLevel.USER),
-        ("admin", PermissionLevel.GROUP_ADMIN),
+        ("unbound_user", PermissionLevel.UNBOUND_USER),
+        ("bound_user", PermissionLevel.BOUND_USER),
+        ("unbound_admin", PermissionLevel.UNBOUND_ADMIN),
+        ("bound_admin", PermissionLevel.BOUND_ADMIN),
+        ("owner", PermissionLevel.OWNER),
         ("superuser", PermissionLevel.SUPERUSER),
-        ("0", PermissionLevel.USER),
-        ("1", PermissionLevel.GROUP_ADMIN),
-        ("2", PermissionLevel.SUPERUSER),
+        ("0", PermissionLevel.UNBOUND_USER),
+        ("1", PermissionLevel.BOUND_USER),
+        ("2", PermissionLevel.UNBOUND_ADMIN),
+        ("3", PermissionLevel.BOUND_ADMIN),
+        ("4", PermissionLevel.OWNER),
+        ("5", PermissionLevel.SUPERUSER),
     ]
     
     for input_str, expected in test_cases:

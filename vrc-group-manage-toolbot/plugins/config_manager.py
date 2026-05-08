@@ -67,7 +67,7 @@ async def handle_config(bot: Bot, event: GroupMessageEvent, args: Message = Comm
         if len(parts) < 3:
             await config_cmd.finish(format_error(
                 "参数不足",
-                "用法: #bot permission <命令> <权限等级>\n权限: 0/user, 1/admin, 2/superuser"
+                "用法: #bot permission <命令> <权限等级>\n权限: 0/unbound_user, 1/bound_user, 2/unbound_admin, 3/bound_admin, 4/owner, 5/superuser"
             ))
         await handle_permission(bot, event, parts[1], parts[2])
     elif subcmd == "reset":

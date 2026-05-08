@@ -26,7 +26,7 @@ class PermissionLevel(IntEnum):
             "owner": cls.OWNER, "4": cls.OWNER,
             "superuser": cls.SUPERUSER, "5": cls.SUPERUSER,
         }
-        return mapping.get(level_str.lower(), cls.UNBOUND_USER)
+        return mapping[level_str.lower()]
 
 
 async def get_permission_level(bot: Bot, event: GroupMessageEvent) -> PermissionLevel:

@@ -278,16 +278,19 @@ async def handle_reset(bot: Bot, event: GroupMessageEvent, cmd_name: str = None)
         await config_cmd.finish(format_success("已重置所有命令配置为默认值"))
 
 
-def _extract_at_qq(raw_msg: Message) -> str | None:
+def _extract_at_qq(raw_msg: Message, event: GroupMessageEvent) -> str | None:
     """从消息中提取第一个 @QQ 号"""
     for seg in raw_msg:
         if seg.type == "at":
             qq = seg.data.get("qq", "")
             if qq and qq != "all":
                 return str(qq)
-    # 段遍历失败时尝试从 CQ 码字符串解析
+    # 段遍历失败时尝试从原始消息字符串解析 CQ 码 [CQ:at,qq=xxx] 或 [at:qq=xxx]
     text = str(raw_msg)
+    logger.debug(f"_extract_at_qq raw text: {text!r}")
     m = re.search(r'\[CQ:at,qq=(\d+)\]', text)
+    if not m:
+        m = re.search(r'\[at:qq=(\d+)\]', text)
     if m:
         return m.group(1)
     return None
@@ -295,7 +298,7 @@ def _extract_at_qq(raw_msg: Message) -> str | None:
 
 async def handle_set_temp_permission(bot: Bot, event: GroupMessageEvent, raw_msg: Message, perm_str: str):
     """设置临时权限"""
-    at_qq = _extract_at_qq(raw_msg)
+    at_qq = _extract_at_qq(raw_msg, event)
     
     if not at_qq:
         await config_cmd.finish(format_error("请 @ 要设置权限的用户"))
@@ -327,7 +330,7 @@ async def handle_set_temp_permission(bot: Bot, event: GroupMessageEvent, raw_msg
 
 async def handle_clear_temp_permission(bot: Bot, event: GroupMessageEvent, raw_msg: Message):
     """清除临时权限"""
-    at_qq = _extract_at_qq(raw_msg)
+    at_qq = _extract_at_qq(raw_msg, event)
     
     if not at_qq:
         await config_cmd.finish(format_error("请 @ 要清除临时权限的用户"))

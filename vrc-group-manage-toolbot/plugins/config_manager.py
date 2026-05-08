@@ -30,7 +30,6 @@ async def handle_config(bot: Bot, event: GroupMessageEvent, args: Message = Comm
     
     text = args.extract_plain_text().strip()
     parts = text.split()
-    raw_msg = event.get_message()
     
     if not parts:
         # 显示帮助信息
@@ -87,9 +86,9 @@ async def handle_config(bot: Bot, event: GroupMessageEvent, args: Message = Comm
                 "参数不足",
                 "用法: #bot settemppermission @QQ <权限等级>"
             ))
-        await handle_set_temp_permission(bot, event, raw_msg, parts[1])
+        await handle_set_temp_permission(bot, event, parts[1])
     elif subcmd == "cleartemppermission":
-        await handle_clear_temp_permission(bot, event, raw_msg)
+        await handle_clear_temp_permission(bot, event)
     elif subcmd == "temppermissions":
         await handle_show_temp_permissions(bot, event)
     else:
@@ -278,27 +277,27 @@ async def handle_reset(bot: Bot, event: GroupMessageEvent, cmd_name: str = None)
         await config_cmd.finish(format_success("已重置所有命令配置为默认值"))
 
 
-def _extract_at_qq(raw_msg: Message, event: GroupMessageEvent) -> str | None:
+def _extract_at_qq(event: GroupMessageEvent) -> str | None:
     """从消息中提取第一个 @QQ 号"""
-    for seg in raw_msg:
+    # 1. 尝试从事件原始消息解析 CQ 码 [CQ:at,qq=xxx] 或 NapCat 格式 [at:qq=xxx]
+    raw = getattr(event, 'raw_message', '') or str(event.get_message())
+    m = re.search(r'\[CQ:at,qq=(\d+)\]', raw)
+    if not m:
+        m = re.search(r'\[at:qq=(\d+)\]', raw)
+    if m:
+        return m.group(1)
+    # 2. 段遍历回退
+    for seg in event.get_message():
         if seg.type == "at":
             qq = seg.data.get("qq", "")
             if qq and qq != "all":
                 return str(qq)
-    # 段遍历失败时尝试从原始消息字符串解析 CQ 码 [CQ:at,qq=xxx] 或 [at:qq=xxx]
-    text = str(raw_msg)
-    logger.debug(f"_extract_at_qq raw text: {text!r}")
-    m = re.search(r'\[CQ:at,qq=(\d+)\]', text)
-    if not m:
-        m = re.search(r'\[at:qq=(\d+)\]', text)
-    if m:
-        return m.group(1)
     return None
 
 
-async def handle_set_temp_permission(bot: Bot, event: GroupMessageEvent, raw_msg: Message, perm_str: str):
+async def handle_set_temp_permission(bot: Bot, event: GroupMessageEvent, perm_str: str):
     """设置临时权限"""
-    at_qq = _extract_at_qq(raw_msg, event)
+    at_qq = _extract_at_qq(event)
     
     if not at_qq:
         await config_cmd.finish(format_error("请 @ 要设置权限的用户"))
@@ -328,7 +327,7 @@ async def handle_set_temp_permission(bot: Bot, event: GroupMessageEvent, raw_msg
     )
 
 
-async def handle_clear_temp_permission(bot: Bot, event: GroupMessageEvent, raw_msg: Message):
+async def handle_clear_temp_permission(bot: Bot, event: GroupMessageEvent):
     """清除临时权限"""
     at_qq = _extract_at_qq(raw_msg, event)
     

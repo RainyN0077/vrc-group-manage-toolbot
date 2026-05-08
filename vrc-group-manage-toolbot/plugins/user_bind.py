@@ -10,7 +10,7 @@ from nonebot.typing import T_State
 
 from utils import get_vrc_client, check_vrc_auth
 from services.api_guard import api_guard
-from services.permission import get_permission_level, PermissionLevel, check_command_permission
+from services.permission import PermissionLevel, check_command_permission
 from services.user_binding import user_binding_store, BindingRecord
 from services.message_utils import format_success, format_error, send_long_message
 

@@ -26,18 +26,30 @@ user_location = on_command("whereis", priority=5)
 async def handle_group_instances(bot: Bot, event: MessageEvent, args: Message = CommandArg()):
     """
     查询群组的活跃实例
-    用法: /instances <group_id>
+    - 群聊中：显示当前群绑定的 VRChat 群组的实例
+    - 私聊中：仅超管可用，需要指定 grp_xxx
     """
     # 私聊限制：仅超管可用
     if isinstance(event, PrivateMessageEvent):
         level = await get_permission_level(bot, event)
         if level < PermissionLevel.SUPERUSER:
             await group_instances.finish("❌ 私聊中仅超级管理员可使用此指令")
-    
-    group_id = args.extract_plain_text().strip()
-    
-    if not group_id:
-        await group_instances.finish("请提供群组 ID\n用法: /instances grp_xxx")
+        
+        # 私聊中需要指定群组 ID
+        group_id = args.extract_plain_text().strip()
+        if not group_id or not group_id.startswith("grp_"):
+            await group_instances.finish("私聊中用法: #instances <grp_xxx>")
+    else:
+        # 群聊中使用已绑定的群组
+        from services.group_config import group_config_store
+        config = group_config_store.get(str(event.group_id))
+        group_id = config.default_vrc_group
+        
+        if not group_id:
+            await group_instances.finish(format_error(
+                "当前群聊尚未绑定 VRChat 群组",
+                "请联系超级管理员使用 #bindgroup <grp_xxx> 进行绑定"
+            ))
     
     msg = ""
     client = get_vrc_client()

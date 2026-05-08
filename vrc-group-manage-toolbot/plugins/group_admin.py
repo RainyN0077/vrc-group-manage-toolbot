@@ -2,6 +2,7 @@ from nonebot import on_command, logger
 from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent, Message
 from nonebot.params import CommandArg, ArgPlainText
 from nonebot.typing import T_State
+from typing import Optional
 
 from utils import get_vrc_client, ensure_vrc_auth
 from services.api_guard import api_guard
@@ -16,7 +17,7 @@ async def require_auth(matcher, client=None):
         await matcher.finish("⚠️ 尚未登录 VRChat API\n请先使用 #vrclLogin 或 #vrclLogin cookie=xxx")
 
 
-def resolve_group_id(event: GroupMessageEvent) -> str:
+def resolve_group_id(event: GroupMessageEvent) -> Optional[str]:
     """
     解析群组 ID
     - 群聊中：强制使用已绑定的默认群组，忽略任何传入的 grp_xxx 参数

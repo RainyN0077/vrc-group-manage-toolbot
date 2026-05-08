@@ -83,7 +83,7 @@ async def handle_config(bot: Bot, event: GroupMessageEvent, args: Message = Comm
                 "参数不足",
                 "用法: #bot settemppermission @QQ <权限等级>"
             ))
-        await handle_set_temp_permission(bot, event, raw_msg, parts[-1])
+        await handle_set_temp_permission(bot, event, raw_msg, parts[1])
     elif subcmd == "cleartemppermission":
         await handle_clear_temp_permission(bot, event, raw_msg)
     elif subcmd == "temppermissions":

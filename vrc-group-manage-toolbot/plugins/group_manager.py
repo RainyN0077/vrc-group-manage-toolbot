@@ -251,8 +251,6 @@ async def handle_vrc_2fa(bot: Bot, event: MessageEvent, args: Message = CommandA
         if level < PermissionLevel.SUPERUSER:
             await vrc_2fa.finish("❌ 私聊中仅超级管理员可使用此指令")
     
-    global _pending_2fa_users
-
     user_key = str(event.user_id)
     if user_key not in _pending_2fa_users:
         await vrc_2fa.finish("当前没有待处理的两步验证，请先使用 #vrclLogin")

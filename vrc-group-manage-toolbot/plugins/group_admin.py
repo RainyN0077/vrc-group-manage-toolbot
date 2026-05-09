@@ -28,12 +28,6 @@ def resolve_group_id(event: GroupMessageEvent) -> Optional[str]:
     return config.default_vrc_group
 
 
-def skip_grp_prefix(parts: list) -> None:
-    """过滤掉以 grp_ 开头的第一个参数（兼容旧格式）"""
-    if parts and parts[0].startswith("grp_"):
-        parts.pop(0)
-
-
 # ── gmembers ──
 
 gmembers_cmd = on_command("gmembers", priority=5, block=True)
@@ -49,7 +43,6 @@ async def handle_gmembers(bot: Bot, event: GroupMessageEvent, state: T_State,
     
     parts = args.extract_plain_text().strip().split()
     group_id = resolve_group_id(event)
-    skip_grp_prefix(parts)
     
     if not group_id:
         await gmembers_cmd.finish(format_error(
@@ -109,7 +102,6 @@ async def handle_ginvite(bot: Bot, event: GroupMessageEvent, args: Message = Com
 
     parts = args.extract_plain_text().strip().split()
     group_id = resolve_group_id(event)
-    skip_grp_prefix(parts)
     
     if not group_id:
         await ginvite_cmd.finish(format_error(
@@ -158,7 +150,6 @@ async def handle_gkick_pre(bot: Bot, event: GroupMessageEvent, state: T_State,
 
     parts = args.extract_plain_text().strip().split()
     group_id = resolve_group_id(event)
-    skip_grp_prefix(parts)
     
     if not group_id:
         await gkick_cmd.finish(format_error(
@@ -213,7 +204,6 @@ async def handle_gban_pre(bot: Bot, event: GroupMessageEvent, state: T_State,
 
     parts = args.extract_plain_text().strip().split()
     group_id = resolve_group_id(event)
-    skip_grp_prefix(parts)
     
     if not group_id:
         await gban_cmd.finish(format_error(
@@ -267,7 +257,6 @@ async def handle_gunban(bot: Bot, event: GroupMessageEvent, args: Message = Comm
 
     parts = args.extract_plain_text().strip().split()
     group_id = resolve_group_id(event)
-    skip_grp_prefix(parts)
     
     if not group_id:
         await gunban_cmd.finish(format_error(
@@ -315,7 +304,6 @@ async def handle_grole(bot: Bot, event: GroupMessageEvent, args: Message = Comma
 
     parts = args.extract_plain_text().strip().split()
     group_id = resolve_group_id(event)
-    skip_grp_prefix(parts)
     
     if not group_id:
         await grole_cmd.finish(format_error(
@@ -435,7 +423,6 @@ async def handle_gaccept(bot: Bot, event: GroupMessageEvent, args: Message = Com
 
     parts = args.extract_plain_text().strip().split()
     group_id = resolve_group_id(event)
-    skip_grp_prefix(parts)
     
     if not group_id:
         await gaccept_cmd.finish(format_error(
@@ -484,7 +471,6 @@ async def handle_greject(bot: Bot, event: GroupMessageEvent, args: Message = Com
 
     parts = args.extract_plain_text().strip().split()
     group_id = resolve_group_id(event)
-    skip_grp_prefix(parts)
     
     if not group_id:
         await greject_cmd.finish(format_error(
@@ -593,7 +579,6 @@ async def handle_gdelannounce_pre(bot: Bot, event: GroupMessageEvent, state: T_S
 
     parts = args.extract_plain_text().strip().split()
     group_id = resolve_group_id(event)
-    skip_grp_prefix(parts)
     
     if not group_id:
         await gdelannounce_cmd.finish(format_error(

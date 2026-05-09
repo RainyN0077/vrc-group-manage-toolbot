@@ -32,6 +32,9 @@ async def handle_bindgroup(bot: Bot, event: GroupMessageEvent | PrivateMessageEv
     
     # 情况1b：私聊中纯数字 QQ 群号 → 查询该群绑定状态
     if isinstance(event, PrivateMessageEvent) and text.isdigit():
+        level = await get_permission_level(bot, event)
+        if level < PermissionLevel.SUPERUSER:
+            await bindgroup_cmd.finish(format_error("私聊查询需要机器人超级管理员权限"))
         await _handle_query(bot, event, qq_group_id=text)
         return
     

@@ -96,7 +96,7 @@ class VRCClient:
                 return False
             client = await self._get_client()
             logger.info(f"Submitting 2FA code: {tfa_code}")
-            # 构建请求参数：BasicAuth + twoFactorAuth cookie（按用户隔离）
+            # 构建请求参数：BasicAuth + twoFactorAuth cookie
             kwargs = {"json": {"code": tfa_code}}
             cookie_key = str(user_id) if user_id else "_default"
             pending_cookie = self._pending_2fa_cookies.get(cookie_key)
